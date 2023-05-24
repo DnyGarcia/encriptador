@@ -19,53 +19,6 @@ function ocultarDibujo(){
     dibujo.style.display = "none";
 }
 
-/* Función que inhabilita los botones si no hay texto ingresado */
-function verificarEspacios() {
-    const texto = textArea.value;
-  
-    if (texto === "") {
-      btnEncriptar.disabled = true;
-      btnDesencriptar.disabled = true;
-      } else {
-      btnEncriptar.disabled = false;
-      btnDesencriptar.disabled = false;
-    }
-  }
-  
-  /* Escucha al evento "input" en la textArea y llama a la función verificarEspacios*/
-  textArea.addEventListener("input", verificarEspacios);
-  
-  /* Llama a la función verificarEspacios */
-  verificarEspacios();
-
-
-/*Función que no permite ingresar letras mayúsculas, números, ni caracteres especiales
-además permite el uso de flechas, tab, enter, delete, control y shift*/
-function verificar(textoIngresado) {
-  
-    let letrasIngresadas = textoIngresado.key;
-  
-    if (/[A-ZÁÉÍÓÚÑÜ^$*()_+|~=`{}\[\]:";'<>?,.\/\\@#€£¥₹%^&0-9]/.test(letrasIngresadas) 
-        && textoIngresado.code !== "Backspace" 
-        && textoIngresado.code !== "Delete"
-        && textoIngresado.code !== "Tab"
-        && textoIngresado.code !== "ArrowUp"
-        && textoIngresado.code !== "ArrowDown"
-        && textoIngresado.code !== "ArrowLeft"
-        && textoIngresado.code !== "ArrowRight"
-        && textoIngresado.code !== "Enter"
-        && !textoIngresado.ctrlKey
-        && !textoIngresado.shiftKey) {
-            textoIngresado.preventDefault();
-            alert("💥 Sólo puede ingresar letras minúsculas. 💥")
-    }
-}
-
-
-/*Escucha el evento de presionar una tecla en la textArea y llama a la función verificar*/
-textArea.addEventListener("keydown",verificar);
-
-
 /* Función que encripta el texto bajo las siguientes reglas:
 La letra "e" es convertida para "enter"
 La letra "i" es convertida para "imes"
@@ -74,7 +27,7 @@ La letra "o" es convertida para "ober"
 La letra "u" es convertida para "ufat"  */
 function encriptarTexto(textoEntrada){
     let vocales = [["e", "enter"], ["i", "imes"], ["a", "ai"], ["o", "ober"], ["u", "ufat"]];
-    
+  
     for (let i = 0; i < vocales.length; i++) {
         if(textoEntrada.includes(vocales[i][0])) {
             textoEntrada = textoEntrada.replaceAll(vocales[i][0], vocales[i][1]);
@@ -84,9 +37,20 @@ function encriptarTexto(textoEntrada){
     return textoEntrada
 }
 
-/*Funcíon que asocia el botón encriptar al valor de la textArea y llama a la función encriptarTexto*/
+/*Funcíon que asocia el botón encriptar al valor de la textArea, verifica los caracteres ingresados y llama a la función encriptarTexto*/
 function botonEncriptar(){
     const textoSalida = encriptarTexto(textArea.value);
+    if (textArea.value === "") {
+        alert("Aún no ha ingresado texto.");
+        dibujo.style.display = "flex";
+        ocultarResultados()
+        return;
+    } if (/[^a-z\s]/.test(textArea.value)){
+        alert("💥 Por favor, verifique el texto ingresado, sólo se aceptan letras minúsculas. 💥");
+        dibujo.style.display = "flex";
+        ocultarResultados()
+        return;
+    }
     mensajeEncriptado.value = textoSalida;
     textArea.value = "";
     areaResultados.style.display = "flex"; 
@@ -104,7 +68,7 @@ btnEncriptar.addEventListener("click",botonEncriptar);
 "ufat" es convertida para la letra "u" */
 function desencriptarTexto(textoEncriptado) {
     let codigo = [["e", "enter"], ["i", "imes"], ["a", "ai"], ["o", "ober"], ["u", "ufat"]];
-    
+  
     for (let i = 0; i < codigo.length; i++) {
         if(textoEncriptado.includes(codigo[i][1])) {
             textoEncriptado = textoEncriptado.replaceAll(codigo[i][1], codigo[i][0]);
@@ -113,10 +77,21 @@ function desencriptarTexto(textoEncriptado) {
     return textoEncriptado
 }
 
-/* Función que asocia el botón Desencriptar con el contenido del mensajeEncriptado y llama
+/* Función que asocia el botón Desencriptar con el contenido del mensajeEncriptado, verifica los caracteres ingresados y llama
 a la función desencriptarTexto */
 function botonDesencriptar(){
     const textoSalida = desencriptarTexto(textArea.value);
+    if (textArea.value === "") {
+        alert("Aún no ha ingresado texto.");
+        dibujo.style.display = "flex";
+        ocultarResultados()
+        return;
+    } if (/[^a-z\s]/.test(textArea.value)){
+        alert("💥 Por favor, verifique el texto ingresado, sólo se aceptan letras minúsculas. 💥");
+        dibujo.style.display = "flex";
+        ocultarResultados()
+        return;
+    }
     mensajeEncriptado.value = textoSalida;
     textArea.value = "";
     areaResultados.style.display = "flex";
